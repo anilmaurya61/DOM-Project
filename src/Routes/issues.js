@@ -16,7 +16,7 @@ async function getIssues() {
     });
     return response.data;
   } catch (error) {
-    throw error.message;
+    throw error;
   }
 }
 
@@ -34,7 +34,7 @@ async function createIssue(issueTitle, issueDescription) {
     })
   }
   catch (e) {
-    console.log(e);
+    throw e;
   }
 }
 
@@ -57,7 +57,7 @@ async function deleteIssue(issueNumber) {
     auth: ACCESS_TOKEN
   })
 
-  await octokit.request('PATCH /repos/{owner}/{repo}/issues/{issue_number}/lock', {
+  await octokit.request('PATCH /repos/{owner}/{repo}/issues/{issue_number}', {
     owner: OWNER,
     repo: REPO,
     issue_number: issueNumber,

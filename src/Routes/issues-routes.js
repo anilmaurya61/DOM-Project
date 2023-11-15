@@ -36,8 +36,7 @@ router.patch('/:issueNumber', async (req, res) => {
 
 router.delete('/delete/:issueNumber', async (req, res) => {
     try {
-        const { issueNumber } = req.params;
-        console.log(issueNumber);
+        const { issueNumber } = req.params
         let result = await deleteIssue(issueNumber);
         res.status(200).json(result);
     } catch (error) {

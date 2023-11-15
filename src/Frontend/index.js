@@ -101,22 +101,20 @@ createdIssueBtn.addEventListener("click", () => {
 saveIssueBtn.addEventListener("click", async () => {
     let title = document.getElementById('issue-title').value;
     let description = document.getElementById('issue-description').value;
-    console.log(description, title);
-    let response = await fetch('./issues', {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "issueTitle": title,
-            "issueDescription": description
-        }),
-    });
-
-    if (response.ok) {
-        console.log("Issue saved successfully");
-    } else {
-        console.error("Failed to save issue");
+    try {
+        await fetch('./issues', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "issueTitle": title,
+                "issueDescription": description
+            }),
+        });
+    }
+    catch (err) {
+        throw err;
     }
 });
 
@@ -135,25 +133,36 @@ function updateIssue(event, title, issueNumber, description) {
         let title = document.getElementById('issue-title').value;
         let description = document.getElementById('issue-description').value;
 
-        let response = await fetch(`./issues/${issueNumber}`, {
-            method: 'PATCH',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "issueTitle": title,
-                "issueDescription": description,
-            }),
-        });
+        try {
+            await fetch(`./issues/${issueNumber}`, {
+                method: 'PATCH',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "issueTitle": title,
+                    "issueDescription": description,
+                }),
+            });
+        }
+        catch (err) {
+            throw err;
+        }
+
     });
     event.preventDefault();
 }
 
 async function deleteIssue(issueNumber) {
-    let response = await fetch(`./issues/delete/${issueNumber}`, {
-        method: 'DELETE',
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+    try {
+        await fetch(`./issues/delete/${issueNumber}`, {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+    }
+    catch (err) {
+        throw err;
+    }
 }
