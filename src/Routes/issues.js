@@ -52,20 +52,21 @@ async function updateIssue(issueNumber, newTitle, newDescription) {
   })
 }
 
-async function lockIssue(issueNumber) {
+async function deleteIssue(issueNumber) {
   const octokit = new Octokit({
     auth: ACCESS_TOKEN
   })
 
-  await octokit.request('PUT /repos/{owner}/{repo}/issues/{issue_number}/lock', {
+  await octokit.request('PATCH /repos/{owner}/{repo}/issues/{issue_number}/lock', {
     owner: OWNER,
     repo: REPO,
     issue_number: issueNumber,
-    lock_reason: 'off-topic',
+    state: 'closed',
+    state_reason: 'completed',
     headers: {
       'X-GitHub-Api-Version': '2022-11-28'
     }
   })
 }
 
-module.exports = { getIssues, createIssue, updateIssue, lockIssue }
+module.exports = { getIssues, createIssue, updateIssue, deleteIssue }

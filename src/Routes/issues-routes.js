@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getIssues, createIssue, updateIssue, lockIssue } = require('../Routes/issues')
+const { getIssues, createIssue, updateIssue, deleteIssue } = require('../Routes/issues')
 
 router.get('/', async (req, res) => {
     try {
@@ -27,6 +27,18 @@ router.patch('/:issueNumber', async (req, res) => {
         const { issueNumber } = req.params;
         const { issueTitle, issueDescription } = req.body;
         let result = await updateIssue(issueNumber, issueTitle, issueDescription);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.delete('/delete/:issueNumber', async (req, res) => {
+    try {
+        const { issueNumber } = req.params;
+        console.log(issueNumber);
+        let result = await deleteIssue(issueNumber);
         res.status(200).json(result);
     } catch (error) {
         console.error(error);
