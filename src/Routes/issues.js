@@ -1,4 +1,5 @@
 const { Octokit } = require('@octokit/core');
+require('dotenv').config()
 
 const { ACCESS_TOKEN, OWNER, REPO } = process.env;
 
@@ -20,7 +21,7 @@ async function getIssues() {
 }
 
 
-async function createdIssue(issueTitle, issueDescription) {
+async function createIssue(issueTitle, issueDescription) {
   const octokit = new Octokit({
     auth: ACCESS_TOKEN
   })
@@ -67,4 +68,4 @@ async function lockIssue(issueNumber) {
   })
 }
 
-module.exports = { getIssues, createdIssue, updateIssue, lockIssue }
+module.exports = { getIssues, createIssue, updateIssue, lockIssue }

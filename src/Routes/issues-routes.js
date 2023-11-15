@@ -1,17 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const { getIssues, createdIssue, updateIssue, lockIssue } = require('../Routes/issues')
+const { getIssues, createIssue, updateIssue, lockIssue } = require('../Routes/issues')
 
 router.get('/', async (req, res) => {
     try {
-        let result = await getIssues();
-        res.status(200).json(result);
+        let issues = await getIssues();
+        res.status(200).json(issues);
     } catch (error) {
-        console.error("Error in handling the request:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
+router.post('/', async (req, res) => {
+    try {
+        const { issueTitle, issueDescription } = req.body;
+        let result = await createIssue(issueTitle, issueDescription);
+        res.status(201).json(result); 
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
+router.patch('/:issueNumber', async (req, res) => {
+    try {
+        const { issueNumber } = req.params;
+        const { issueTitle, issueDescription } = req.body;
+        let result = await updateIssue(issueNumber, issueTitle, issueDescription);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 module.exports = router;

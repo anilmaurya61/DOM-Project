@@ -12,49 +12,36 @@
     <header>
         <h1>GitHub Issues CRUD</h1>
         <ul>
-            <li><a href="#">New Issue</a></li>
-            <li><a href="#">Get Issues</a></li>
+            <li><a id="create-issue-btn" href="#">New Issue</a></li>
+            <li><a id="get-issue-btn" href="#">Get Issues</a></li>
         </ul>
     </header>
-    <section>
+
+    <section class="issues-input">
         <div class="model-container">
             <div class="issue-title">
                 <h4>Add a title</h4>
-                <input type="text" placeholder="Title">
+                <input id="issue-title" type="text" placeholder="Title">
             </div>
             <div class="issue-body">
-               <h4>Add a description</h4> 
-               <textarea name="description" id="description" cols="30" rows="10" placeholder="Add a description here ..."></textarea>
+                <h4>Add a description</h4>
+                <textarea id="issue-description" name="description" id="description" cols="30" rows="10"
+                    placeholder="Add a description here ..."></textarea>
             </div>
-            <span><a href="">Save</a></span>
+            <div class="btn">
+                <span class="save-issue-btn"><a href="">Save</a></span>
+                <span><a href="">Close</a></span>
+            </div>
+
         </div>
     </section>
     <main>
         <div class="container">
             <h1>Issues</h1>
-            <div class="issue-container">
-                <div class="issues">
-                    <h3> Found a Bug</h3>
-                    <p>#4 opened 1 hour ago by anilmaurya61</p>
-                </div>
-                <div class="issues-btn">
-                    <span><a href="#">Update</a></span>
-                    <span><a href="#">Delete</a></span>
-                </div>
-            </div>
-
-            <div class="issue-container">
-                <div class="issues">
-                    <h3> Found a Bug</h3>
-                    <p>#4 opened 1 hour ago by anilmaurya61</p>
-                </div>
-                <div class="issues-btn">
-                    <span><a href="#">Update</a></span>
-                    <span><a href="#">Delete</a></span>
-                </div>
-            </div>
+            <div class="issuesBox"></div>
         </div>
     </main>
+    <script src="./index.js"></script>
 </body>
 
 </html>
