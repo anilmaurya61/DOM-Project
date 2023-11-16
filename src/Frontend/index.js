@@ -77,6 +77,7 @@ function getIssueList(issues) {
     return issuesList;
 }
 
+
 document.addEventListener("DOMContentLoaded", async (event) => {
     try {
         let response = await fetch('/issues');
@@ -91,68 +92,91 @@ document.addEventListener("DOMContentLoaded", async (event) => {
 
 getIssueBtn.addEventListener("click", async (event) => {
     location.reload();
-    event.stopImmediatePropagation();
-})
+});
 
 createdIssueBtn.addEventListener("click", (event) => {
     document.querySelector(".issues-input").style.display = "block";
     saveIssueBtn.classList.add("new-issue-btn");
     event.stopImmediatePropagation();
-})
+});
 
 saveIssueBtn.addEventListener("click", async (event) => {
     let title = document.getElementById('issue-title').value;
     let description = document.getElementById('issue-description').value;
     document.querySelector('.issues-input').style.display = 'none';
-    fetch('./issues', {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "issueTitle": title,
-            "issueDescription": description
-        }),
-    });
+
+    try {
+        let response = await fetch('./issues', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "issueTitle": title,
+                "issueDescription": description
+            }),
+        });
+
+        if (response.ok) {
+            location.reload();
+        } else {
+            console.error('Failed to create issue:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error creating issue:', error);
+    }
+
     event.stopImmediatePropagation();
 });
 
 function updateIssue(event, title, issueNumber, description) {
-
     document.querySelector(".issues-update").style.display = "block";
 
     document.getElementById('updated-issue-title').value = title;
     document.getElementById('updated-issue-description').value = description;
 
     document.querySelector(".update-btn").addEventListener('click', async () => {
-
-        let title = document.getElementById('updated-issue-title').value;
-        let description = document.getElementById('updated-issue-description').value;
+        let updatedTitle = document.getElementById('updated-issue-title').value;
+        let updatedDescription = document.getElementById('updated-issue-description').value;
         message.style.display = "block";
-        fetch(`./issues/${issueNumber}`, {
-            method: 'PATCH',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "issueTitle": title,
-                "issueDescription": description,
-            }),
-        });
+
+        try {
+            let response = await fetch(`./issues/${issueNumber}`, {
+                method: 'PATCH',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "issueTitle": updatedTitle,
+                    "issueDescription": updatedDescription,
+                }),
+            });
+            if (response.ok) {
+                location.reload();
+            } else {
+                console.error('Failed to update issue:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating issue:', error);
+        }
     });
-    event.preventDefault();
 }
 
 async function deleteIssue(issueNumber) {
     try {
         message.style.display = "block";
-        fetch(`./issues/delete/${issueNumber}`, {
+        let response = await fetch(`./issues/delete/${issueNumber}`, {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
             },
         });
-        window.location.reload(true);
+
+        if (response.ok) {
+            location.reload();
+        } else {
+            console.error('Failed to delete issue:', response.statusText);
+        }
     } catch (error) {
         console.error('Error deleting issue:', error);
     }
