@@ -2,6 +2,9 @@
 
 This application allows you to perform CRUD operations on GitHub issues for a specific repository using the GitHub API.
 
+![image](https://github.com/anilmaurya61/DOM-project/assets/56387037/d73d5de7-8916-425b-bc74-9c334aecc97a)
+
+
 ## Prerequisites
 
 Before you begin, ensure you have the following:
