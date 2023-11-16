@@ -1,8 +1,9 @@
 const createdIssueBtn = document.getElementById("create-issue-btn");
 const getIssueBtn = document.getElementById("get-issue-btn");
-const deleteIssueBtn = document.getElementById("delete-issue-btn");
 const container = document.querySelector(".issuesBox");
-const saveIssueBtn = document.querySelector(".new-issue-btn");
+const saveIssueBtn = document.querySelector(".save-btn");
+const message = document.querySelector(".success-msg");
+
 
 let issueHtml = `
 <div class="issue-container">
@@ -19,9 +20,6 @@ let issueHtml = `
     </div>
 </div>
 `;
-
-let parser = new DOMParser();
-let issueElement = parser.parseFromString(issueHtml, 'text/html').body.firstChild;
 
 
 function calcTime(time) {
@@ -79,90 +77,83 @@ function getIssueList(issues) {
     return issuesList;
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", async (event) => {
     try {
         let response = await fetch('/issues');
         let issues = await response.json();
         let issuesList = getIssueList(issues);
         appendIssues(issuesList);
+        event.stopImmediatePropagation();
     } catch (error) {
         console.error("Error fetching issues:", error);
     }
 });
 
-getIssueBtn.addEventListener("click", async () => {
+getIssueBtn.addEventListener("click", async (event) => {
     location.reload();
+    event.stopImmediatePropagation();
 })
 
-createdIssueBtn.addEventListener("click", () => {
+createdIssueBtn.addEventListener("click", (event) => {
     document.querySelector(".issues-input").style.display = "block";
+    saveIssueBtn.classList.add("new-issue-btn");
+    event.stopImmediatePropagation();
 })
 
-saveIssueBtn.addEventListener("click", async () => {
+saveIssueBtn.addEventListener("click", async (event) => {
     let title = document.getElementById('issue-title').value;
     let description = document.getElementById('issue-description').value;
-    try {
-        await fetch('./issues', {
-            method: 'POST',
+    document.querySelector('.issues-input').style.display = 'none';
+    fetch('./issues', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "issueTitle": title,
+            "issueDescription": description
+        }),
+    });
+    event.stopImmediatePropagation();
+});
+
+function updateIssue(event, title, issueNumber, description) {
+
+    document.querySelector(".issues-update").style.display = "block";
+
+    document.getElementById('updated-issue-title').value = title;
+    document.getElementById('updated-issue-description').value = description;
+
+    document.querySelector(".update-btn").addEventListener('click', async () => {
+
+        let title = document.getElementById('updated-issue-title').value;
+        let description = document.getElementById('updated-issue-description').value;
+        message.style.display = "block";
+        fetch(`./issues/${issueNumber}`, {
+            method: 'PATCH',
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 "issueTitle": title,
-                "issueDescription": description
+                "issueDescription": description,
             }),
         });
-    }
-    catch (err) {
-        throw err;
-    }
-});
-
-function updateIssue(event, title, issueNumber, description) {
-
-    document.querySelector(".issues-input").style.display = "block";
-
-    document.getElementById('issue-title').value = title;
-    document.getElementById('issue-description').value = description;
-
-    const newIssueBtn = document.querySelector('.new-issue-btn');
-    newIssueBtn.classList.remove('new-issue-btn');
-
-    document.querySelector(".patch-issue-btn").addEventListener('click', async () => {
-
-        let title = document.getElementById('issue-title').value;
-        let description = document.getElementById('issue-description').value;
-
-        try {
-            await fetch(`./issues/${issueNumber}`, {
-                method: 'PATCH',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    "issueTitle": title,
-                    "issueDescription": description,
-                }),
-            });
-        }
-        catch (err) {
-            throw err;
-        }
-
     });
     event.preventDefault();
 }
 
 async function deleteIssue(issueNumber) {
     try {
-        await fetch(`./issues/delete/${issueNumber}`, {
+        message.style.display = "block";
+        fetch(`./issues/delete/${issueNumber}`, {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
             },
         });
-    }
-    catch (err) {
-        throw err;
+        window.location.reload(true);
+    } catch (error) {
+        console.error('Error deleting issue:', error);
     }
 }

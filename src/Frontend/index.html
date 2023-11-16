@@ -16,7 +16,9 @@
             <li><a id="get-issue-btn" href="#">Get Issues</a></li>
         </ul>
     </header>
-
+    <div class="success-msg">
+       <h1>&#10004; Succes</h1> 
+    </div>
     <section class="issues-input">
         <div class="model-container">
             <div class="issue-title">
@@ -29,10 +31,26 @@
                     placeholder="Add a description here ..."></textarea>
             </div>
             <div class="btn">
-                <span class="new-issue-btn patch-issue-btn"><a href="">Save</a></span>
+                <span class="save-btn"><a href="">Save</a></span>
                 <span><a href="">Close</a></span>
             </div>
-
+        </div>
+    </section>
+    <section class="issues-update">
+        <div class="model-container">
+            <div class="issue-title">
+                <h4>Add a title</h4>
+                <input id="updated-issue-title" type="text" placeholder="Title">
+            </div>
+            <div class="issue-body">
+                <h4>Add a description</h4>
+                <textarea id="updated-issue-description" name="description" id="description" cols="30" rows="10"
+                    placeholder="Add a description here ..."></textarea>
+            </div>
+            <div class="btn">
+                <span class="update-btn"><a href="">Update</a></span>
+                <span><a href="">Close</a></span>
+            </div>
         </div>
     </section>
     <main>

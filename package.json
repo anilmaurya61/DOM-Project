@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon index.js",
+    "start": "npx nodemon src/server.js",
     "configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\""
   },
   "lint-staged": {
-    "**/*.{js,jsx}": ["eslint . --fix", "prettier --write ."]
+    "**/*.{jsx}": ["eslint . --fix", "prettier --write ."]
   },
   "husky": {
     "hooks": {

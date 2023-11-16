@@ -52,7 +52,33 @@ span:active {
     box-shadow: inset 2px 2px 5px rgba(56, 49, 49, 0.7);
 }
 
+/* ......         Alert Message          .... */
 
+.success-msg {
+    display: none;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 3px;
+    color: #270;
+    background-color: #DFF2BF;
+    animation: slideInAndOut 3s ease-in-out forwards;
+  }
+  
+  @keyframes slideInAndOut {
+    0% {
+      right: -100%;
+    }
+    25% {
+      right: 10%; /* Slide in from the right */
+    }
+    75% {
+      right: 10%; /* Stay visible for a while */
+    }
+    100% {
+      right: -100%; /* Slide out to the right */
+    }
+  }
+  
 /* ...........Issues Container................ */
 
 .container h1{
@@ -118,4 +144,8 @@ span:active {
 .issue-body h4 {
     margin-bottom: 5px; 
     margin-top: 10px; 
+}
+
+.issues-update{
+   display: none;
 }
