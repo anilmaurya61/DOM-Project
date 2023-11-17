@@ -21,6 +21,17 @@ let issueHtml = `
 </div>
 `;
 
+// Function for popupBox
+async function popupBox(title, text) {
+    await Swal.fire({
+        icon: 'success',
+        title: title,
+        text: text,
+        timer: 1500,
+        timerProgressBar: true,
+        showConfirmButton: false,
+    });
+}
 
 function calcTime(time) {
 
@@ -42,6 +53,8 @@ function calcTime(time) {
 }
 
 function appendIssues(issues) {
+    container.innerHTML = '';
+
     for (let i = 0; i < issues.length; i++) {
         let issue = issues[i];
         let time = calcTime(issue.time);
@@ -77,21 +90,24 @@ function getIssueList(issues) {
     return issuesList;
 }
 
+async function getIssue(event){
+    let response = await fetch('/issues');
+    let issues = await response.json();
 
+    let issuesList = getIssueList(issues.data);
+    appendIssues(issuesList);
+    event.stopImmediatePropagation();
+}
 document.addEventListener("DOMContentLoaded", async (event) => {
     try {
-        let response = await fetch('/issues');
-        let issues = await response.json();
-        let issuesList = getIssueList(issues);
-        appendIssues(issuesList);
-        event.stopImmediatePropagation();
+       getIssue(event)
     } catch (error) {
         console.error("Error fetching issues:", error);
     }
 });
 
 getIssueBtn.addEventListener("click", async (event) => {
-    location.reload();
+    getIssue(event);
 });
 
 createdIssueBtn.addEventListener("click", (event) => {
@@ -117,15 +133,14 @@ saveIssueBtn.addEventListener("click", async (event) => {
             }),
         });
 
-        if (response.ok) {
+        if (response.status == 200) {
+            await popupBox("Issue Created!", "Issue Created successfully.")
+            await Swal.close();
             location.reload();
-        } else {
-            console.error('Failed to create issue:', response.statusText);
         }
     } catch (error) {
         console.error('Error creating issue:', error);
     }
-
     event.stopImmediatePropagation();
 });
 
@@ -138,7 +153,6 @@ function updateIssue(event, title, issueNumber, description) {
     document.querySelector(".update-btn").addEventListener('click', async () => {
         let updatedTitle = document.getElementById('updated-issue-title').value;
         let updatedDescription = document.getElementById('updated-issue-description').value;
-        message.style.display = "block";
 
         try {
             let response = await fetch(`./issues/${issueNumber}`, {
@@ -151,10 +165,10 @@ function updateIssue(event, title, issueNumber, description) {
                     "issueDescription": updatedDescription,
                 }),
             });
-            if (response.ok) {
+            if (response.status == 200) {
+                await popupBox("Issue Updated!", "Issue Updated successfully.")
+                await Swal.close();
                 location.reload();
-            } else {
-                console.error('Failed to update issue:', response.statusText);
             }
         } catch (error) {
             console.error('Error updating issue:', error);
@@ -164,20 +178,19 @@ function updateIssue(event, title, issueNumber, description) {
 
 async function deleteIssue(issueNumber) {
     try {
-        message.style.display = "block";
         let response = await fetch(`./issues/delete/${issueNumber}`, {
-            method: 'DELETE',
+            method: 'PATCH',
             headers: {
                 "Content-Type": "application/json",
             },
         });
-
-        if (response.ok) {
+        if (response.status == 200) {
+            await popupBox("Issue Deleted!", "Issue Deleted successfully.")
+            await Swal.close();
             location.reload();
-        } else {
-            console.error('Failed to delete issue:', response.statusText);
         }
     } catch (error) {
+        location.reload();
         console.error('Error deleting issue:', error);
     }
 }

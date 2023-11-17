@@ -6,14 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub Issues CRUD</title>
     <link rel="stylesheet" href="./styles.css">
+    <!-- Import SweetAlert library -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
 </head>
 
 <body>
     <header>
         <h1>GitHub Issues CRUD</h1>
         <ul>
-            <li><a id="create-issue-btn" href="#">New Issue</a></li>
-            <li><a id="get-issue-btn" href="#">Get Issues</a></li>
+            <li><a id="create-issue-btn">New Issue</a></li>
+            <li><a id="get-issue-btn">Get Issues</a></li>
         </ul>
     </header>
     <div class="success-msg">
@@ -31,8 +36,8 @@
                     placeholder="Add a description here ..."></textarea>
             </div>
             <div class="btn">
-                <span class="save-btn"><a href="">Save</a></span>
-                <span><a href="">Close</a></span>
+                <span class="save-btn"><a>Save</a></span>
+                <span><a>Close</a></span>
             </div>
         </div>
     </section>
@@ -48,8 +53,8 @@
                     placeholder="Add a description here ..."></textarea>
             </div>
             <div class="btn">
-                <span class="update-btn"><a href="">Update</a></span>
-                <span><a href="">Close</a></span>
+                <span class="update-btn"><a>Update</a></span>
+                <span><a>Close</a></span>
             </div>
         </div>
     </section>
@@ -59,6 +64,7 @@
             <div class="issuesBox"></div>
         </div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./index.js"></script>
 </body>
 
