@@ -21,36 +21,6 @@ let issueHtml = `
 </div>
 `;
 
-// Function for popupBox
-async function popupBox(title, text) {
-    await Swal.fire({
-        icon: 'success',
-        title: title,
-        text: text,
-        timer: 1500,
-        timerProgressBar: true,
-        showConfirmButton: false,
-    });
-}
-
-function calcTime(time) {
-
-    let startTime = new Date(time);
-
-    let currentDate = new Date();
-    if (!isNaN(startTime.getTime())) {
-        let timeDifferenceInMilliseconds = currentDate - startTime;
-        if (timeDifferenceInMilliseconds >= 24 * 60 * 60 * 1000) {
-            let timeDifferenceInDays = (timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24)).toFixed(0);
-            return `${timeDifferenceInDays} days`;
-        } else {
-            let timeDifferenceInHours = (timeDifferenceInMilliseconds / (1000 * 60 * 60)).toFixed(0);
-            return `${timeDifferenceInHours} hours`;
-        }
-    } else {
-        return "#";
-    }
-}
 
 function appendIssues(issues) {
     container.innerHTML = '';
@@ -90,7 +60,7 @@ function getIssueList(issues) {
     return issuesList;
 }
 
-async function getIssue(event){
+async function getIssue(event) {
     let response = await fetch('/issues');
     let issues = await response.json();
 
@@ -98,16 +68,30 @@ async function getIssue(event){
     appendIssues(issuesList);
     event.stopImmediatePropagation();
 }
+
 document.addEventListener("DOMContentLoaded", async (event) => {
     try {
-       getIssue(event)
+        await getIssue(event);
     } catch (error) {
         console.error("Error fetching issues:", error);
     }
 });
 
 getIssueBtn.addEventListener("click", async (event) => {
-    getIssue(event);
+    try {
+        showLoadingToast("Loading...");
+        await getIssue(event);
+        await Toast.fire({
+            icon: "success",
+            title: "Loaded issues successfully"
+          });
+        location.reload();
+    } catch (error) {
+        await Toast.fire({
+            icon: "error",
+            title: "Oops! Something went wrong"
+          });
+        location.reload();    }
 });
 
 createdIssueBtn.addEventListener("click", (event) => {
@@ -120,7 +104,7 @@ saveIssueBtn.addEventListener("click", async (event) => {
     let title = document.getElementById('issue-title').value;
     let description = document.getElementById('issue-description').value;
     document.querySelector('.issues-input').style.display = 'none';
-
+    showLoadingToast("Creating...");
     try {
         let response = await fetch('./issues', {
             method: 'POST',
@@ -134,26 +118,31 @@ saveIssueBtn.addEventListener("click", async (event) => {
         });
 
         if (response.status == 200) {
-            await popupBox("Issue Created!", "Issue Created successfully.")
-            await Swal.close();
+            await Toast.fire({
+                icon: "success",
+                title: "Issue Created Successfully",
+              });
             location.reload();
         }
     } catch (error) {
-        console.error('Error creating issue:', error);
+        await Toast.fire({
+            icon: "error",
+            title: "Oops! Something went wrong"
+          });
+        location.reload();
     }
     event.stopImmediatePropagation();
 });
 
 function updateIssue(event, title, issueNumber, description) {
     document.querySelector(".issues-update").style.display = "block";
-
     document.getElementById('updated-issue-title').value = title;
     document.getElementById('updated-issue-description').value = description;
 
     document.querySelector(".update-btn").addEventListener('click', async () => {
         let updatedTitle = document.getElementById('updated-issue-title').value;
         let updatedDescription = document.getElementById('updated-issue-description').value;
-
+        showLoadingToast("Updating...");
         try {
             let response = await fetch(`./issues/${issueNumber}`, {
                 method: 'PATCH',
@@ -166,18 +155,25 @@ function updateIssue(event, title, issueNumber, description) {
                 }),
             });
             if (response.status == 200) {
-                await popupBox("Issue Updated!", "Issue Updated successfully.")
-                await Swal.close();
+                await Toast.fire({
+                    icon: "success",
+                    title: "Issue updated successfully",
+                  });
                 location.reload();
             }
         } catch (error) {
-            console.error('Error updating issue:', error);
+            await Toast.fire({
+                icon: "error",
+                title: "Oops! Something went wrong"
+              });
+            location.reload();
         }
     });
 }
 
 async function deleteIssue(issueNumber) {
     try {
+        showLoadingToast("Deleting...");
         let response = await fetch(`./issues/delete/${issueNumber}`, {
             method: 'PATCH',
             headers: {
@@ -185,12 +181,68 @@ async function deleteIssue(issueNumber) {
             },
         });
         if (response.status == 200) {
-            await popupBox("Issue Deleted!", "Issue Deleted successfully.")
-            await Swal.close();
+            await Toast.fire({
+                icon: "success",
+                title: "Issue  Deleted successfully"
+              });
             location.reload();
         }
     } catch (error) {
+        await await Toast.fire({
+            icon: "error",
+            title: "Oops! Something went wrong"
+          });
         location.reload();
-        console.error('Error deleting issue:', error);
     }
 }
+
+
+function calcTime(time) {
+
+    let startTime = new Date(time);
+
+    let currentDate = new Date();
+    if (!isNaN(startTime.getTime())) {
+        let timeDifferenceInMilliseconds = currentDate - startTime;
+        if (timeDifferenceInMilliseconds >= 24 * 60 * 60 * 1000) {
+            let timeDifferenceInDays = (timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24)).toFixed(0);
+            return `${timeDifferenceInDays} days`;
+        } else {
+            let timeDifferenceInHours = (timeDifferenceInMilliseconds / (1000 * 60 * 60)).toFixed(0);
+            return `${timeDifferenceInHours} hours`;
+        }
+    } else {
+        return "#";
+    }
+}
+
+
+// Function for popupBox
+const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    }
+  });
+
+  function showLoadingToast(message) {
+      Toast.fire({
+      icon: "info", 
+      title: message,
+      timer: 500, 
+      allowOutsideClick: true,
+      showClass: {
+        popup: 'swal2-noanimation',
+        backdrop: 'swal2-noanimation'
+      },
+      hideClass: {
+        popup: '',
+        backdrop: ''
+      },
+    });
+  }

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Web Page</title>
+
+  <!-- Include SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+
+  <!-- Your custom CSS styles (if any) -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Your HTML content -->
+
+  <!-- Include SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+
+  <!-- Your custom JavaScript -->
+  <script>
+    // Your JavaScript code using SweetAlert2 goes here
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    // Function to show loading toast
+    function showLoadingToast(message) {
+      Toast.fire({
+        icon: "info", 
+        title: message,
+        timer: 0, 
+        allowOutsideClick: false,
+        showClass: {
+          popup: 'swal2-noanimation',
+          backdrop: 'swal2-noanimation'
+        },
+        hideClass: {
+          popup: '',
+          backdrop: ''
+        },
+      });
+    }
+
+    // Simulate creating action
+    showLoadingToast("Creating...");
+
+    // Simulate deleting action
+    // showLoadingToast("Deleting...");
+
+    // Simulate success after some time (you can replace this with your actual logic)
+    setTimeout(() => {
+      Toast.fire({
+        icon: "success",
+        title: "Operation successful"
+      });
+    }, 3000); // Assuming the operation takes 3 seconds
+  </script>
+</body>
+</html>
