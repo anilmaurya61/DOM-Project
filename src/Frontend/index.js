@@ -71,9 +71,17 @@ async function getIssue(event) {
 
 document.addEventListener("DOMContentLoaded", async (event) => {
     try {
+        showLoadingToast("Loading...");
         await getIssue(event);
+        await Toast.fire({
+            icon: "success",
+            title: "Loaded issues successfully"
+        });
     } catch (error) {
-        console.error("Error fetching issues:", error);
+        await Toast.fire({
+            icon: "error",
+            title: "Oops! Something went wrong"
+        });
     }
 });
 
@@ -84,14 +92,13 @@ getIssueBtn.addEventListener("click", async (event) => {
         await Toast.fire({
             icon: "success",
             title: "Loaded issues successfully"
-          });
-        location.reload();
+        });
     } catch (error) {
         await Toast.fire({
             icon: "error",
             title: "Oops! Something went wrong"
-          });
-        location.reload();    }
+        });
+    }
 });
 
 createdIssueBtn.addEventListener("click", (event) => {
@@ -118,18 +125,17 @@ saveIssueBtn.addEventListener("click", async (event) => {
         });
 
         if (response.status == 200) {
+            await getIssue(event);
             await Toast.fire({
                 icon: "success",
                 title: "Issue Created Successfully",
-              });
-            location.reload();
+            });
         }
     } catch (error) {
         await Toast.fire({
             icon: "error",
             title: "Oops! Something went wrong"
-          });
-        location.reload();
+        });
     }
     event.stopImmediatePropagation();
 });
@@ -155,18 +161,18 @@ function updateIssue(event, title, issueNumber, description) {
                 }),
             });
             if (response.status == 200) {
+                await getIssue(event);
                 await Toast.fire({
                     icon: "success",
                     title: "Issue updated successfully",
-                  });
+                });
                 location.reload();
             }
         } catch (error) {
             await Toast.fire({
                 icon: "error",
                 title: "Oops! Something went wrong"
-              });
-            location.reload();
+            });
         }
     });
 }
@@ -184,15 +190,14 @@ async function deleteIssue(issueNumber) {
             await Toast.fire({
                 icon: "success",
                 title: "Issue  Deleted successfully"
-              });
+            });
             location.reload();
         }
     } catch (error) {
         await await Toast.fire({
             icon: "error",
             title: "Oops! Something went wrong"
-          });
-        location.reload();
+        });
     }
 }
 
@@ -225,24 +230,24 @@ const Toast = Swal.mixin({
     timer: 3000,
     timerProgressBar: true,
     didOpen: (toast) => {
-      toast.onmouseenter = Swal.stopTimer;
-      toast.onmouseleave = Swal.resumeTimer;
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
     }
-  });
+});
 
-  function showLoadingToast(message) {
-      Toast.fire({
-      icon: "info", 
-      title: message,
-      timer: 500, 
-      allowOutsideClick: true,
-      showClass: {
-        popup: 'swal2-noanimation',
-        backdrop: 'swal2-noanimation'
-      },
-      hideClass: {
-        popup: '',
-        backdrop: ''
-      },
+function showLoadingToast(message) {
+    Toast.fire({
+        icon: "info",
+        title: message,
+        timer: 500,
+        allowOutsideClick: true,
+        showClass: {
+            popup: 'swal2-noanimation',
+            backdrop: 'swal2-noanimation'
+        },
+        hideClass: {
+            popup: '',
+            backdrop: ''
+        },
     });
-  }
+}
